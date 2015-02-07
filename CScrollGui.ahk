@@ -157,7 +157,8 @@ Class ScrollGUI {
       This.Height := Height
       If (ScrollBars & 1) {
          ;This.SetScrollInfo(SB_HORZ, {Max: MaxH, Page: PageH, Pos: 0})
-         SI := This.NewScrollInfo()
+         ;SI := new 
+         SI := new _Struct(WinStructs.SCROLLINFO)
          SI.nMax := MaxH
          SI.nPage := PageH
          SI.nPos := 0
@@ -174,7 +175,7 @@ Class ScrollGUI {
             This.WheelH := True
       }
       If (ScrollBars & 2) {
-         SI := This.NewScrollInfo()
+         SI := new _Struct(WinStructs.SCROLLINFO)
          SI.nMax := MaxV
          SI.nPage := PageV
          SI.nPos := 0
@@ -236,13 +237,6 @@ Class ScrollGUI {
       }
    }
    ; ===================================================================================================================
-   ; Returns a new SCROLLINFO structure
-   NewScrollInfo(){
-      SI := new _Struct(WinStructs.SCROLLINFO)
-      SI.cbSize := sizeof(WinStructs.SCROLLINFO)
-      return SI
-   }
-   ; ===================================================================================================================
    ; AdjustToParent Adjust the scroll bars to the new parent dimensions.
    ; Parameters:
    ;    Width       -  New width of the client area of the ScrollGUI in pixels.
@@ -267,7 +261,7 @@ Class ScrollGUI {
       SH := SV := 0
       If This.ScrollH {
          If (Width <> This.Width) {
-            SI := This.NewScrollInfo()
+            SI := new _Struct(WinStructs.SCROLLINFO)
             SI.nPage := Width
             ;This.SetScrollInfo(0, {Page: Width})
             This.SetScrollInfo(0, SI)
@@ -281,7 +275,7 @@ Class ScrollGUI {
       If This.ScrollV {
          If (Height <> This.Height) {
             ;This.SetScrollInfo(1, {Page: Height})
-            SI := This.NewScrollInfo()
+            SI := new _Struct(WinStructs.SCROLLINFO)
             SI.nPage := Height
             This.SetScrollInfo(1, SI)
             This.Height := Height
@@ -333,7 +327,7 @@ Class ScrollGUI {
             XN += This.Width - (XC + MaxH)
             If (XN > 0)
                XN := 0
-            SI := This.NewScrollInfo()
+            SI := new _Struct(WinStructs.SCROLLINFO)
             SI.nPos := XN * -1
             ;This.SetScrollInfo(0, {Pos: XN * -1})
             This.SetScrollInfo(0, SI)
@@ -347,7 +341,7 @@ Class ScrollGUI {
             YN += This.Height - (YC + MaxV)
             If (YN > 0)
                YN := 0
-            SI := This.NewScrollInfo()
+            SI := new _Struct(WinStructs.SCROLLINFO)
             SI.nPos := YN * -1
             ;This.SetScrollInfo(1, {Pos: YN * -1})
             This.SetScrollInfo(1, SI)
@@ -379,7 +373,7 @@ Class ScrollGUI {
          This.MaxH := Max
       Else
          This.MaxV := Max
-      SI := This.NewScrollInfo()
+      SI := new _Struct(WinStructs.SCROLLINFO)
       SI.nMax := Max
       ;Return This.SetScrollInfo(SB, {Max: Max})
       Return This.SetScrollInfo(SB, SI)
@@ -428,7 +422,7 @@ Class ScrollGUI {
          This.PageH := Page
       Else
          This.PageV := Page
-      SI := This.NewScrollInfo()
+      SI := new _Struct(WinStructs.SCROLLINFO)
       SI.nPage := Page
       ;Return This.SetScrollInfo(SB, {Page: Page})
       Return This.SetScrollInfo(SB, SI)
@@ -437,7 +431,7 @@ Class ScrollGUI {
    ; Methods for internal or system use!!!
    ; ===================================================================================================================
    GetScrollInfo(SB, ByRef SI) {
-      SI := new _Struct(WinStructs.SCROLLINFO),{cbSize: sizeof(WinStructs.SCROLLINFO)}
+      SI := new _Struct(WinStructs.SCROLLINFO)
       SI.fMask := 0x17
       Return DllCall("User32.dll\GetScrollInfo", "Ptr", This.HWND, "Int", SB, "Ptr", SI[], "UInt")
    }
@@ -498,7 +492,6 @@ Class ScrollGUI {
       If (PA = PN)
          Return 0
       SI := new _Struct(WinStructs.SCROLLINFO)
-      SI.cbSize := sizeof(WinStructs.SCROLLINFO)
       SI.nPos := PN
       ;This.SetScrollInfoOld(SB, {Pos: PN})
       This.SetScrollInfo(SB, SI)
