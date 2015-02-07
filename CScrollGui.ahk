@@ -91,7 +91,7 @@ Class ScrollGUI {
       PageH := NumGet(RC, 8, "Int")
       PageV := Numget(RC, 12, "Int")
       */
-      DllCall("User32.dll\GetWindowRect", "Ptr", HGUI, "Ptr", RECT[])
+      DllCall("User32.dll\GetClientRect", "Ptr", HWND, "Ptr", RECT[])
       PageH := RECT.Right
       PageV := RECT.Bottom
       ; Instance variables
@@ -186,12 +186,16 @@ Class ScrollGUI {
    AdjustToParent(Width := 0, Height := 0) {
       If (Width = 0) || (Height = 0) {
          VarSetCapacity(RC, 16, 0)
+         
+         RECT := new _Struct(WinStructs.RECT)
          /*
          DllCall("User32.dll\GetClientRect", "Ptr", This.HWND, "Ptr", &RC)
          Width := NumGet(RC, 8, "Int")
          Height := Numget(RC, 12, "Int")
          */
-         RECT := new _Struct(WinStructs.RECT)
+         DllCall("User32.dll\GetClientRect", "Ptr", This.HWND, "Ptr", RECT[])
+         Width := NumGet(RC, 8, "Int")
+         Height := Numget(RC, 12, "Int")
          Width := RECT.Right
          Height := RECT.Bottom
       }
