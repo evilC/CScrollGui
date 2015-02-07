@@ -194,8 +194,6 @@ Class ScrollGUI {
          Height := Numget(RC, 12, "Int")
          */
          DllCall("User32.dll\GetClientRect", "Ptr", This.HWND, "Ptr", RECT[])
-         Width := NumGet(RC, 8, "Int")
-         Height := Numget(RC, 12, "Int")
          Width := RECT.Right
          Height := RECT.Bottom
       }
@@ -239,17 +237,34 @@ Class ScrollGUI {
    AdjustToChild() {
       Static WS_HSCROLL := 0x100000, WS_VSCROLL := 0x200000
       VarSetCapacity(RC, 16, 0)
+      
+      RECT := new _Struct(WinStructs.RECT)
+      /*
       DllCall("User32.dll\GetWindowRect", "Ptr", This.HGUI, "Ptr", &RC)
       DllCall("User32.dll\ScreenToClient", "Ptr", This.HWND, "Ptr", &RC)
       MX := MY := ""
       XC := XN := NumGet(RC, 0, "Int")
       YC := YN := NumGet(RC, 4, "Int")
+      */
+      DllCall("User32.dll\GetWindowRect", "Ptr", This.HGUI, "Ptr", RECT[])
+      DllCall("User32.dll\ScreenToClient", "Ptr", This.HWND, "Ptr", RECT[])
+      MX := MY := ""
+      XC := XN := RECT.Left
+      YC := YN := RECT.Top
+      
       Gui, % This.HGUI . ":Show", x%XC% y%YC% AutoSize
+      /*
       DllCall("User32.dll\GetWindowRect", "Ptr", This.HGUI, "Ptr", &RC)
       MaxH := NumGet(RC, 8, "Int") - NumGet(RC, 0, "Int")
       MaxV := Numget(RC, 12, "Int") - NumGet(RC, 4, "Int")
+      */
+      DllCall("User32.dll\GetWindowRect", "Ptr", This.HGUI, "Ptr", RECT[])
+      MaxH := RECT.Right - RECT.Left
+      MaxV := RECT.Bottom - RECT.Top
+      
       LineH := Ceil(MaxH / 20)
       LineV := Ceil(MaxV / 20)
+
       If This.ScrollH {
          MX := MaxH + 1
          This.SetMax(1, MaxH)
