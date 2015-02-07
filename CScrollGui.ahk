@@ -367,7 +367,7 @@ Class ScrollGUI {
    ; Methods for internal or system use!!!
    ; ===================================================================================================================
    GetScrollInfo(SB, ByRef SI) {
-      SI := new _Struct(WinStructs.SCROLLINFO)
+      SI := new _Struct(WinStructs.SCROLLINFO),{cbSize: sizeof(WinStructs.SCROLLINFO)}
       /*
       Static SI_SIZE := 28
       Static SIF_ALL := 0x17
@@ -376,7 +376,6 @@ Class ScrollGUI {
       NumPut(SIF_ALL, SI, 4, "UInt")
       Return DllCall("User32.dll\GetScrollInfo", "Ptr", This.HWND, "Int", SB, "Ptr", &SI, "UInt")
       */
-      SI.cbSize := 0
       SI.fMask := 0x17
       Return DllCall("User32.dll\GetScrollInfo", "Ptr", This.HWND, "Int", SB, "Ptr", SI[], "UInt")
    }
@@ -388,7 +387,9 @@ Class ScrollGUI {
       Static SIF_DISABLENOSCROLL := 0x08
       Mask := 0
       VarSetCapacity(SI, SI_SIZE, 0)
+      ;SI := new _Struct(WinStructs.SCROLLINFO){cbSize: sizeof(WinStructs.SCROLLINFO)}
       NumPut(SI_SIZE, SI, 0, "UInt")
+      
       For Key, Value In Values {
          If SIF.HasKey(Key) {
             Mask |= SIF[Key]
