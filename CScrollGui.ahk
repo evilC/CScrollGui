@@ -382,9 +382,7 @@ Class ScrollGUI {
          }
       }
       if (SI.fMask){
-         if (!SI.fMask){
-            SI.fMask := SIF_DISABLENOSCROLL
-         }
+         SI.fMask |= SIF_DISABLENOSCROLL
          r := DllCall("User32.dll\SetScrollInfo", "Ptr", This.HWND, "Int", SB, "Ptr", SI[], "UInt", 1, "UInt")
          return r
       }
