@@ -43,6 +43,7 @@ Class ScrollGUI {
    ;    You won't be able to use the wheel to scroll child GUI controls.
    ; ===================================================================================================================
    __New(HGUI, Width, Height, GuiOptions := "", ScrollBars := 3, Wheel := 0) {
+      This.ScrollExceptions := []
       Static SB_HORZ := 0, SB_VERT = 1
       Static WM_HSCROLL := 0x0114, WM_VSCROLL := 0x0115
       Static WM_MOUSEWHEEL := 0x020A, WM_MOUSEHWHEEL := 0x020E
@@ -362,6 +363,20 @@ Class ScrollGUI {
       Return This.SetScrollInfo(SB, SI)
    }
    ; ===================================================================================================================
+   ; AddScrollException        Routes scrolling messages to a GUI Control
+   ; Parameters:
+   ;    hwnd        -  the HWND of the GUIControl
+   ; Return values:
+   ;    On success: True
+   ;    On failure: False
+   ; ===================================================================================================================
+   AddScrollException(hwnd){
+      if (!ScrollGUI.ScrollExceptions.MaxIndex){
+         ScrollGUI.ScrollExceptions := []
+      }
+      ScrollGUI.ScrollExceptions.Insert(hwnd)
+   }
+   ; ===================================================================================================================
    ; Methods for internal or system use!!!
    ; ===================================================================================================================
    GetScrollInfo(SB, ByRef SI) {
@@ -447,7 +462,18 @@ Class ScrollGUI {
    On_WM_Wheel(LP, Msg, H) {
       Static WM_HSCROLL := 0x0114, WM_VSCROLL := 0x0115
       Static WM_MOUSEWHEEL := 0x020A, WM_MOUSEHWHEEL := 0x020E
-      HWND := WinExist("A")
+      
+      MouseGetPos,tmp,tmp,tmp,h,2    ; Get HWND of control under cursor
+      found := 0
+      Loop % ScrollGUI.ScrollExceptions.MaxIndex() {
+         if (ScrollGUI.ScrollExceptions[A_Index] = h){
+            found++
+            HWND := h
+         }
+      }
+      if (!found){
+         HWND := WinExist("A")
+      }
       If ScrollGUI.Instances.HasKey(HWND) {
          Instance := Object(ScrollGUI.Instances[HWND])
          If ((Msg = WM_MOUSEHWHEEL) && Instance.WheelH)

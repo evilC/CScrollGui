@@ -14,7 +14,8 @@ Loop 20 {
 	LV_ADD("", "Test")
 }
 ; Create ScrollGUI1 with both horizontal and vertical scrollbars and mouse wheel capturing
-SG1 := New NewScrollGui(HGUI, 400, 400, "+Resize +MinSize +LabelGui1", 3, 3)
+SG1 := New ScrollGui(HGUI, 400, 400, "+Resize +MinSize +LabelGui1", 3, 3)
+SG1.AddScrollException(LVTest)
 ; Show ScrollGUI1
 SG1.Show("ScrollGUI1 Title", "y0 xcenter")
 
