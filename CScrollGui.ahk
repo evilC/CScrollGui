@@ -203,7 +203,8 @@ Class ScrollGUI {
             This.SetScrollInfo(0, {Page: Width})
             This.Width := Width
             This.GetScrollInfo(0, SI)
-            PosH := NumGet(SI, 20, "Int")
+            ;PosH := NumGet(SI, 20, "Int")
+            PosH := SI.nPos
             SH := This.PosH - PosH
             This.PosH := PosH
          }
@@ -213,7 +214,8 @@ Class ScrollGUI {
             This.SetScrollInfo(1, {Page: Height})
             This.Height := Height
             This.GetScrollInfo(1, SI)
-            PosV := NumGet(SI, 20, "Int")
+            ;PosV := NumGet(SI, 20, "Int")
+            PosV := SI.nPos
             SV := This.PosV - PosV
             This.PosV := PosV
          }
@@ -365,12 +367,18 @@ Class ScrollGUI {
    ; Methods for internal or system use!!!
    ; ===================================================================================================================
    GetScrollInfo(SB, ByRef SI) {
+      SI := new _Struct(WinStructs.SCROLLINFO)
+      /*
       Static SI_SIZE := 28
       Static SIF_ALL := 0x17
       VarSetCapacity(SI, SI_SIZE, 0)
       NumPut(SI_SIZE, SI, 0, "UInt")
       NumPut(SIF_ALL, SI, 4, "UInt")
       Return DllCall("User32.dll\GetScrollInfo", "Ptr", This.HWND, "Int", SB, "Ptr", &SI, "UInt")
+      */
+      SI.cbSize := 0
+      SI.fMask := 0x17
+      Return DllCall("User32.dll\GetScrollInfo", "Ptr", This.HWND, "Int", SB, "Ptr", SI[], "UInt")
    }
    ; ===================================================================================================================
    SetScrollInfo(SB, Values) {
@@ -415,22 +423,28 @@ Class ScrollGUI {
       SI := 0
       If !This.GetScrollInfo(SB, SI)
          Return
-      PA := PN := NumGet(SI, 20, "Int")
+      ;PA := PN := NumGet(SI, 20, "Int")
+      PA := PN := SI.nPos
+      
       If (SC = SB_LINEMINUS)
          PN := PA - SD
       Else If (SC = SB_LINEPLUS)
          PN := PA + SD
       Else If (SC = SB_PAGEMINUS)
-         PN := PA - NumGet(SI, 16, "UInt")
+         ;PN := PA - NumGet(SI, 16, "UInt")
+         PN := PA - SI.nPage
       Else If (SC = SB_PAGEPLUS)
-         PN := PA + NumGet(SI, 16, "UInt")
+         ;PN := PA + NumGet(SI, 16, "UInt")
+         PN := PA + SI.nPage
       Else If (SC = SB_THUMBTRACK)
-         PN := NumGet(SI, 24, "Int")
+         ;PN := NumGet(SI, 24, "Int")
+         PN := SI.nTrackPos
       If (PA = PN)
          Return 0
       This.SetScrollInfo(SB, {Pos: PN})
       This.GetScrollInfo(SB, SI)
-      PN := NumGet(SI, 20, "Int")
+      ;PN := NumGet(SI, 20, "Int")
+      PN := SI.nPos
       If (SB = 0)
          This.PosH := PN
       Else
