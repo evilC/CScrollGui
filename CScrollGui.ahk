@@ -371,7 +371,7 @@ Class ScrollGUI {
    ;    On failure: False
    ; ===================================================================================================================
    AddScrollException(hwnd){
-      if (!ScrollGUI.ScrollExceptions.MaxIndex){
+      if (!ScrollGUI.ScrollExceptions.MaxIndex()){
          ScrollGUI.ScrollExceptions := []
       }
       ScrollGUI.ScrollExceptions.Insert(hwnd)
