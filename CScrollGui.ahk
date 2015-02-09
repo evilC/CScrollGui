@@ -2,12 +2,11 @@
 #include <WinStructs>
 
 ; ======================================================================================================================
-; Namepace:       ScrollGUI
+; Namepace:       CScrollGUI
 ; Function:       Create a scrollable GUI as a parent for GUI windows.
-; Tested with:    AHK 1.1.19.02
-; Tested on:      Win 8.1 (x64)
-; Change log:     1.0.00.00/2015-02-06/just me        -  initial release on ahkscript.org
 ; License:        The Unlicense -> http://unlicense.org
+; Based upon:     Code by Just Me: http://ahkscript.org/boards/viewtopic.php?f=6&t=6316
+; Base version:   1.0.01.00/2015-02-08/just me
 ; ======================================================================================================================
 Class ScrollGUI {
    Static Instances := []
@@ -83,8 +82,8 @@ Class ScrollGUI {
       If (MX <> "") || (MY <> "")
          Gui, %HWND%:+MaxSize%MX%x%MY%
       DllCall("User32.dll\GetClientRect", "Ptr", HWND, "Ptr", RECT[])
-      PageH := RECT.Right
-      PageV := RECT.Bottom
+      PageH := RECT.Right + 1
+      PageV := RECT.Bottom + 1
       ; Instance variables
       This.HWND := HWND
       This.HGUI := HGUI
@@ -197,7 +196,7 @@ Class ScrollGUI {
       If This.ScrollH {
          If (Width <> This.Width) {
             SI := new _Struct(WinStructs.SCROLLINFO)
-            SI.nPage := Width
+            SI.nPage := Width + 1
             ;This.SetScrollInfo(0, {Page: Width})
             This.SetScrollInfo(0, SI)
             This.Width := Width
@@ -211,7 +210,7 @@ Class ScrollGUI {
          If (Height <> This.Height) {
             ;This.SetScrollInfo(1, {Page: Height})
             SI := new _Struct(WinStructs.SCROLLINFO)
-            SI.nPage := Height
+            SI.nPage := Height + 1
             This.SetScrollInfo(1, SI)
             This.Height := Height
             This.GetScrollInfo(1, SI)
