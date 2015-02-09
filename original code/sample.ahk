@@ -1,7 +1,6 @@
 #SingleInstance force
 #NoEnv
-#Include <CScrollGUI>
-
+#Include Class_ScrollGUI.ahk
 SetBatchLines, -1
 ; -------------------------------------------------------------------------------------------------------------------
 ; ChildGUI 1
@@ -36,7 +35,7 @@ Gui, Font, s32
 Gui, Add, Text, ys wp h300 Center 0x200 Border Hidden vTX2, Hidden Text 1
 Gui, Add, Text, xs wp h300 Center 0x200 Border Hidden vTX3, Hidden Text 2
 ; Create ScrollGUI2 with both horizontal and vertical scrollbars
-SG2 := New ScrollGUI(HGUI2, 600, 200, "+Resize +LabelGui2")
+SG2 := New ScrollGUI(HGUI2, 600, 200, "+LabelGui2 +Resize")
 ; Show ScrollGUI2
 SG2.Show("ScrollGUI2 Title", "x0 yCenter")
 Return
@@ -49,7 +48,6 @@ ShowHide:
    SG2.AdjustToChild()
 Return
 ; ----------------------------------------------------------------------------------------------------------------------
-Esc::
 Gui1Close:
 Gui1Escape:
 ExitApp
